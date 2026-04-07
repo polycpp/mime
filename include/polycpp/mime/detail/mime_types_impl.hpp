@@ -176,8 +176,10 @@ inline std::optional<std::string> contentType(const std::string& typeOrExt) {
         mime = typeOrExt;
     }
 
-    // If it already has a charset parameter, return as-is.
-    if (detail::hasCharsetParameter(mime)) {
+    // If it already contains "charset" anywhere (parameter name, value,
+    // etc.), return as-is.  This matches npm mime-types, which uses a plain
+    // `str.indexOf('charset')` check rather than proper parameter parsing.
+    if (mime.find("charset") != std::string::npos) {
         return mime;
     }
 
