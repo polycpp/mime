@@ -85,6 +85,45 @@ inline std::string extractType(const std::string& str) {
     return std::string(str, start, end - start);
 }
 
+/**
+ * @brief Check whether a content-type string already has a charset parameter.
+ *
+ * Parses semicolon-separated parameters and only matches an actual parameter
+ * named `charset`, ignoring other keys or values that merely contain the
+ * substring.
+ */
+inline bool hasCharsetParameter(const std::string& str) {
+    size_t pos = 0;
+
+    while (true) {
+        pos = str.find(';', pos);
+        if (pos == std::string::npos) {
+            return false;
+        }
+        ++pos;
+
+        while (pos < str.size() && std::isspace(static_cast<unsigned char>(str[pos]))) {
+            ++pos;
+        }
+
+        size_t keyStart = pos;
+        while (pos < str.size() && str[pos] != '=' && str[pos] != ';') {
+            ++pos;
+        }
+
+        size_t keyEnd = pos;
+        while (keyEnd > keyStart &&
+               std::isspace(static_cast<unsigned char>(str[keyEnd - 1]))) {
+            --keyEnd;
+        }
+
+        if (keyEnd > keyStart &&
+            detail::toLower(std::string(str, keyStart, keyEnd - keyStart)) == "charset") {
+            return pos < str.size() && str[pos] == '=';
+        }
+    }
+}
+
 } // namespace detail
 
 // ============================================================================
@@ -137,13 +176,9 @@ inline std::optional<std::string> contentType(const std::string& typeOrExt) {
         mime = typeOrExt;
     }
 
-    // If it already has charset parameter, return as-is
-    // Case-insensitive search for "charset"
-    {
-        std::string lower = detail::toLower(mime);
-        if (lower.find("charset") != std::string::npos) {
-            return mime;
-        }
+    // If it already has a charset parameter, return as-is.
+    if (detail::hasCharsetParameter(mime)) {
+        return mime;
     }
 
     // Try to append charset

@@ -100,8 +100,8 @@ inline bool matchTypeRegexp(const std::string& str,
     size_t pos = 0;
     size_t len = str.size();
 
-    // Skip leading spaces
-    while (pos < len && str[pos] == ' ') ++pos;
+    // Skip leading whitespace
+    while (pos < len && std::isspace(static_cast<unsigned char>(str[pos]))) ++pos;
 
     // Type: first char must be alnum
     if (pos >= len || !isRestrictedNameFirst(str[pos])) return false;
@@ -130,15 +130,16 @@ inline bool matchTypeRegexp(const std::string& str,
         ++sub_chars;
     }
 
-    // Skip trailing spaces
-    while (pos < len && str[pos] == ' ') ++pos;
+    // Skip trailing whitespace
+    while (pos < len && std::isspace(static_cast<unsigned char>(str[pos]))) ++pos;
 
     // Must be at end
     if (pos != len) return false;
 
     full_subtype_out = str.substr(sub_start, pos - sub_start);
-    // Trim trailing spaces from subtype
-    while (!full_subtype_out.empty() && full_subtype_out.back() == ' ') {
+    // Trim trailing whitespace from subtype
+    while (!full_subtype_out.empty() &&
+           std::isspace(static_cast<unsigned char>(full_subtype_out.back()))) {
         full_subtype_out.pop_back();
     }
 

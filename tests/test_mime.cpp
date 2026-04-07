@@ -111,6 +111,21 @@ TEST(MimeContentTypeTest, DoesNotAlterExistingCharset) {
               "text/html; charset=iso-8859-1");
 }
 
+TEST(MimeContentTypeTest, AppendsCharsetWhenValueContainsCharsetSubstring) {
+    EXPECT_EQ(contentType("text/html; foo=my-charset-token"),
+              "text/html; foo=my-charset-token; charset=utf-8");
+}
+
+TEST(MimeContentTypeTest, AppendsCharsetWhenParameterNameContainsCharsetSubstring) {
+    EXPECT_EQ(contentType("text/html; charsetFlag=true"),
+              "text/html; charsetFlag=true; charset=utf-8");
+}
+
+TEST(MimeContentTypeTest, DetectsCharsetParameterWithWhitespaceAroundEquals) {
+    EXPECT_EQ(contentType("text/html; charset = utf-8"),
+              "text/html; charset = utf-8");
+}
+
 TEST(MimeContentTypeTest, ReturnsTypeForUnknownMimeType) {
     EXPECT_EQ(contentType("application/x-bogus"), "application/x-bogus");
 }
@@ -296,6 +311,13 @@ TEST(MediaTyperParseTest, LowerCasesType) {
     EXPECT_EQ(mt.suffix, "xml");
 }
 
+TEST(MediaTyperParseTest, TrimsGenericWhitespace) {
+    auto mt = parse("\t application/xhtml+xml \n");
+    EXPECT_EQ(mt.type, "application");
+    EXPECT_EQ(mt.subtype, "xhtml");
+    EXPECT_EQ(mt.suffix, "xml");
+}
+
 TEST(MediaTyperParseTest, ThrowsOnInvalidMediaTypes) {
     std::vector<std::string> invalidTypes = {
         " ", "null", "undefined", "/", "text/;plain",
@@ -378,6 +400,10 @@ TEST(MediaTyperTestTest, PassesTypeWithSuffix) {
 
 TEST(MediaTyperTestTest, PassesUpperCaseType) {
     EXPECT_TRUE(test("IMAGE/SVG+XML"));
+}
+
+TEST(MediaTyperTestTest, PassesTypeWrappedInGenericWhitespace) {
+    EXPECT_TRUE(test("\t text/html \r\n"));
 }
 
 TEST(MediaTyperTestTest, FailsInvalidMediaTypes) {
