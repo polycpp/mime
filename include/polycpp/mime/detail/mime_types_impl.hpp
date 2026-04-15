@@ -176,10 +176,10 @@ inline std::optional<std::string> contentType(const std::string& typeOrExt) {
         mime = typeOrExt;
     }
 
-    // If it already contains "charset" anywhere (parameter name, value,
-    // etc.), return as-is.  This matches npm mime-types, which uses a plain
-    // `str.indexOf('charset')` check rather than proper parameter parsing.
-    if (mime.find("charset") != std::string::npos) {
+    // Only skip if an actual `charset` parameter is already present (case
+    // insensitive).  A plain substring check would misfire on parameter
+    // values or names that merely contain "charset".
+    if (detail::hasCharsetParameter(mime)) {
         return mime;
     }
 

@@ -100,9 +100,8 @@ inline bool matchTypeRegexp(const std::string& str,
     size_t pos = 0;
     size_t len = str.size();
 
-    // Skip leading spaces only (not tabs/CR/LF — matches npm media-typer
-    // regex `^ *...`)
-    while (pos < len && str[pos] == ' ') ++pos;
+    // Skip leading generic whitespace (tabs/CR/LF/space).
+    while (pos < len && std::isspace(static_cast<unsigned char>(str[pos]))) ++pos;
 
     // Type: first char must be alnum
     if (pos >= len || !isRestrictedNameFirst(str[pos])) return false;
@@ -131,8 +130,8 @@ inline bool matchTypeRegexp(const std::string& str,
         ++sub_chars;
     }
 
-    // Skip trailing spaces only (matches npm media-typer regex `... *$`)
-    while (pos < len && str[pos] == ' ') ++pos;
+    // Skip trailing generic whitespace.
+    while (pos < len && std::isspace(static_cast<unsigned char>(str[pos]))) ++pos;
 
     // Must be at end
     if (pos != len) return false;
