@@ -7,7 +7,7 @@ Read the structured syntax suffix
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    bool isJsonShaped(const std::string& header) {
        using namespace polycpp::mime;

@@ -1,7 +1,8 @@
 #pragma once
 
 // AUTO-GENERATED from mime-db v1.54.0 db.json
-// Do not edit manually. Regenerate with scripts/generate_db.py
+// Source artifact: pass the upstream mime-db db.json path with --db-json
+// Do not edit manually. Regenerate with scripts/generate_db.py --db-json <path-to-db.json>
 
 #include <array>
 #include <cstdint>
@@ -24,11 +25,6 @@ struct MimeEntry {
     Compressible compressible;
     uint16_t ext_offset;
     uint8_t ext_count;
-};
-
-struct ExtEntry {
-    std::string_view ext;
-    std::string_view mime_type;
 };
 
 inline constexpr std::array<MimeEntry, 2601> MIME_DB = {{
@@ -3940,7 +3936,7 @@ inline constexpr std::array<std::string_view, 1302> EXTENSIONS = {{
     "ice",
 }};
 
-inline constexpr std::array<ExtEntry, 1246> EXT_TO_MIME = {{
+inline constexpr std::array<TypeEntry, 1246> EXT_TO_MIME = {{
     {"123", "application/vnd.lotus-1-2-3"},
     {"1km", "application/vnd.1000minds.decision-model+xml"},
     {"210", "model/step"},
@@ -5187,6 +5183,12 @@ inline constexpr std::array<ExtEntry, 1246> EXT_TO_MIME = {{
     {"zir", "application/vnd.zul"},
     {"zirz", "application/vnd.zul"},
     {"zmm", "application/vnd.handheld-entertainment+xml"},
+}};
+
+inline constexpr std::array<ExtensionConflict, 3> EXTENSION_CONFLICTS = {{
+    {"mp4", "application/mp4", "video/mp4"},
+    {"mpg4", "application/mp4", "video/mp4"},
+    {"wav", "audio/wave", "audio/wav"},
 }};
 
 } // namespace detail

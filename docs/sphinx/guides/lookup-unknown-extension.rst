@@ -7,7 +7,7 @@ you still need to send a response header.
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    std::string contentTypeOrFallback(const std::string& pathOrExt) {
        using namespace polycpp::mime;

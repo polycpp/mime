@@ -12,7 +12,7 @@
 #include <string_view>
 
 #include <polycpp/core/error.hpp>
-#include <polycpp/mime/detail/aggregator.hpp>
+#include <polycpp/mime/mime.hpp>
 
 namespace {
 

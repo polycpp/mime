@@ -6,7 +6,7 @@ Detect the charset for a MIME type
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    std::string pickCharset(const std::string& mimeType) {
        using namespace polycpp::mime;

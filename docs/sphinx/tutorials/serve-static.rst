@@ -45,7 +45,7 @@ extension candidate:
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    std::string pickContentType(const std::filesystem::path& file) {
        using namespace polycpp::mime;

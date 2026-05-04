@@ -12,7 +12,7 @@ in as ``constexpr`` data — zero startup cost, zero I/O at first lookup.
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
    using namespace polycpp::mime;
 
    auto type = lookup("index.html");        // "text/html"
@@ -29,8 +29,8 @@ in as ``constexpr`` data — zero startup cost, zero I/O at first lookup.
       :margin: 1
 
       Same four verbs as npm ``mime-types`` — ``lookup``, ``contentType``,
-      ``extension``, ``charset`` — plus the ``parse`` / ``format`` /
-      ``test`` triad from ``media-typer``.
+      ``extension``, ``charset`` — plus read-only data accessors and the
+      ``parse`` / ``format`` / ``test`` triad from ``media-typer``.
 
    .. grid-item-card:: C++20 native
       :margin: 1
@@ -48,8 +48,8 @@ in as ``constexpr`` data — zero startup cost, zero I/O at first lookup.
    .. grid-item-card:: Plays well with polycpp
       :margin: 1
 
-      Uses the same JSON value, error, and typed-event types as the rest of
-      the polycpp ecosystem — no impedance mismatch.
+      Uses ``polycpp::path::extname`` and ``polycpp::TypeError`` where the
+      upstream packages map naturally to polycpp primitives.
 
 Getting started
 ---------------

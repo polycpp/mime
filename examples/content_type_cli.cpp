@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-#include <polycpp/mime/detail/aggregator.hpp>
+#include <polycpp/mime/mime.hpp>
 
 int main(int argc, char** argv) {
     using namespace polycpp::mime;

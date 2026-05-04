@@ -20,11 +20,13 @@ namespace mime {
 namespace detail {
 
 /**
- * @brief Convert a string to lowercase in-place and return it.
+ * @brief Convert ASCII letters to lowercase in-place and return the string.
  */
 inline std::string toLower(std::string s) {
     for (auto& c : s) {
-        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        if (c >= 'A' && c <= 'Z') {
+            c = static_cast<char>(c - 'A' + 'a');
+        }
     }
     return s;
 }
@@ -48,16 +50,16 @@ inline const MimeEntry* findMimeEntry(std::string_view type) {
 
 /**
  * @brief Binary search for an extension in the sorted EXT_TO_MIME array.
- * @return Pointer to the ExtEntry, or nullptr if not found.
+ * @return Pointer to the TypeEntry, or nullptr if not found.
  */
-inline const ExtEntry* findExtEntry(std::string_view ext) {
+inline const TypeEntry* findExtEntry(std::string_view ext) {
     auto it = std::lower_bound(
         EXT_TO_MIME.begin(), EXT_TO_MIME.end(), ext,
-        [](const ExtEntry& entry, std::string_view e) {
-            return entry.ext < e;
+        [](const TypeEntry& entry, std::string_view e) {
+            return entry.extension < e;
         }
     );
-    if (it != EXT_TO_MIME.end() && it->ext == ext) {
+    if (it != EXT_TO_MIME.end() && it->extension == ext) {
         return &(*it);
     }
     return nullptr;
@@ -155,7 +157,7 @@ inline std::optional<std::string> lookup(const std::string& pathOrExt) {
     if (!entry) {
         return std::nullopt;
     }
-    return std::string(entry->mime_type);
+    return std::string(entry->type);
 }
 
 inline std::optional<std::string> contentType(const std::string& typeOrExt) {
@@ -237,6 +239,40 @@ inline std::optional<std::string> charset(const std::string& mimeType) {
     }
 
     return std::nullopt;
+}
+
+inline std::span<const TypeEntry> types() {
+    return std::span<const TypeEntry>(detail::EXT_TO_MIME.data(), detail::EXT_TO_MIME.size());
+}
+
+inline std::vector<std::string> extensions(const std::string& mimeType) {
+    if (mimeType.empty()) {
+        return {};
+    }
+
+    std::string type = detail::toLower(detail::extractType(mimeType));
+    if (type.empty()) {
+        return {};
+    }
+
+    auto* entry = detail::findMimeEntry(type);
+    if (!entry || entry->ext_count == 0) {
+        return {};
+    }
+
+    std::vector<std::string> result;
+    result.reserve(entry->ext_count);
+    for (uint8_t i = 0; i < entry->ext_count; ++i) {
+        result.emplace_back(detail::EXTENSIONS[entry->ext_offset + i]);
+    }
+    return result;
+}
+
+inline std::span<const ExtensionConflict> extensionConflicts() {
+    return std::span<const ExtensionConflict>(
+        detail::EXTENSION_CONFLICTS.data(),
+        detail::EXTENSION_CONFLICTS.size()
+    );
 }
 
 } // namespace mime

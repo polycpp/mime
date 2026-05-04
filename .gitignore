@@ -3,6 +3,8 @@ build/
 build-*/
 build_*/
 cmake-build-*/
+docs/build/
+.tmp/
 
 # Working documents (never committed)
 /internal/
@@ -32,6 +34,11 @@ compile_commands.json
 # Testing artifacts
 Testing/
 CTestTestfile.cmake
+
+# Generated logs and Python caches
+*.log
+__pycache__/
+*.py[cod]
 
 # Package managers / FetchContent
 _deps/

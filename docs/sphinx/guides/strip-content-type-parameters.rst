@@ -10,7 +10,7 @@ lookup, but when you want the type itself, parse it and re-format:
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    std::string baseType(const std::string& header) {
        using namespace polycpp::mime;

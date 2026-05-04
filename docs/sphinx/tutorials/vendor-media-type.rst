@@ -23,7 +23,7 @@ writing your own regex, hand the string to
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    bool isValidContentType(std::string_view header) {
        using namespace polycpp::mime;
@@ -102,7 +102,7 @@ where we fail the request:
 
 .. code-block:: cpp
 
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
    #include <polycpp/core/error.hpp>
 
    struct NegotiationResult {

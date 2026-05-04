@@ -14,7 +14,10 @@
  */
 
 #include <optional>
+#include <span>
 #include <string>
+#include <string_view>
+#include <vector>
 
 namespace polycpp {
 namespace mime {
@@ -110,6 +113,61 @@ std::optional<std::string> extension(const std::string& mimeType);
  */
 std::optional<std::string> charset(const std::string& mimeType);
 
+/**
+ * @brief Read-only entry from the extension-to-MIME-type map.
+ *
+ * This is the C++ equivalent of one entry in upstream `mime.types`.
+ */
+struct TypeEntry {
+    std::string_view extension;  ///< File extension without a leading dot.
+    std::string_view type;       ///< Preferred MIME type for the extension.
+};
+
+/**
+ * @brief Diagnostic record for an extension whose preferred MIME type changed
+ *        under upstream mimeScore conflict resolution.
+ *
+ * This mirrors the upstream `_extensionConflicts` diagnostic export without
+ * exposing mutable global maps.
+ */
+struct ExtensionConflict {
+    std::string_view extension;      ///< File extension without a leading dot.
+    std::string_view legacyType;     ///< MIME type selected by legacy scoring.
+    std::string_view preferredType;  ///< MIME type selected by mimeScore.
+};
+
+/**
+ * @brief Return the read-only extension-to-MIME-type map.
+ *
+ * The returned span points at static generated data and remains valid for the
+ * lifetime of the program.
+ *
+ * @return Extension-to-type entries sorted by extension.
+ */
+std::span<const TypeEntry> types();
+
+/**
+ * @brief Return all known extensions for a MIME type.
+ *
+ * This is the read-only C++ equivalent of upstream `mime.extensions[type]`.
+ * Parameters are stripped and lookup is case-insensitive.
+ *
+ * @param mimeType A MIME type string, optionally with parameters.
+ * @return Extensions without leading dots; empty when the type is unknown or
+ *         has no extensions.
+ */
+std::vector<std::string> extensions(const std::string& mimeType);
+
+/**
+ * @brief Return extension conflict diagnostics from upstream mimeScore.
+ *
+ * The returned span points at static generated data and remains valid for the
+ * lifetime of the program.
+ *
+ * @return Extension conflict records sorted by generation order.
+ */
+std::span<const ExtensionConflict> extensionConflicts();
+
 // ============================================================================
 // media-typer API
 // ============================================================================
@@ -185,3 +243,5 @@ bool test(const std::string& mediaType);
 
 } // namespace mime
 } // namespace polycpp
+
+#include <polycpp/mime/detail/aggregator.hpp>

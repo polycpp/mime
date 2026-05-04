@@ -15,7 +15,7 @@ Full example
 .. code-block:: cpp
 
    #include <iostream>
-   #include <polycpp/mime/detail/aggregator.hpp>
+   #include <polycpp/mime/mime.hpp>
 
    using namespace polycpp::mime;
 

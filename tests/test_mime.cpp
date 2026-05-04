@@ -4,12 +4,14 @@
  *        test suites plus additional coverage.
  */
 
-#include <polycpp/mime/detail/aggregator.hpp>
+#include <polycpp/mime/mime.hpp>
 #include <polycpp/core/error.hpp>
 
 #include <gtest/gtest.h>
+#include <algorithm>
 #include <optional>
 #include <string>
+#include <vector>
 
 using namespace polycpp::mime;
 
@@ -286,6 +288,38 @@ TEST(MimeExtensionTest, CommonMimeTypes) {
     EXPECT_EQ(extension("application/pdf"), "pdf");
 }
 
+TEST(MimeDataAccessTest, ExposesReadOnlyTypesMap) {
+    auto entries = types();
+    EXPECT_GT(entries.size(), 1000u);
+
+    auto json = std::find_if(entries.begin(), entries.end(), [](const TypeEntry& entry) {
+        return entry.extension == "json";
+    });
+    ASSERT_NE(json, entries.end());
+    EXPECT_EQ(json->type, "application/json");
+}
+
+TEST(MimeDataAccessTest, ExposesExtensionsForMimeType) {
+    auto jsonExtensions = extensions("application/json; charset=UTF-8");
+    EXPECT_NE(std::find(jsonExtensions.begin(), jsonExtensions.end(), "json"),
+              jsonExtensions.end());
+
+    auto missing = extensions("application/x-bogus");
+    EXPECT_TRUE(missing.empty());
+}
+
+TEST(MimeDataAccessTest, ExposesMimeScoreConflictDiagnostics) {
+    auto conflicts = extensionConflicts();
+    EXPECT_GT(conflicts.size(), 0u);
+
+    auto mp4 = std::find_if(conflicts.begin(), conflicts.end(), [](const ExtensionConflict& conflict) {
+        return conflict.extension == "mp4";
+    });
+    ASSERT_NE(mp4, conflicts.end());
+    EXPECT_EQ(mp4->legacyType, "application/mp4");
+    EXPECT_EQ(mp4->preferredType, "video/mp4");
+}
+
 // ============================================================================
 // media-typer parse() tests — ported from media-typer test suite
 // ============================================================================
@@ -327,6 +361,11 @@ TEST(MediaTyperParseTest, ThrowsOnInvalidMediaTypes) {
     for (const auto& t : invalidTypes) {
         EXPECT_THROW(parse(t), polycpp::TypeError) << "Should throw for: " << t;
     }
+}
+
+TEST(MediaTyperParseTest, ThrowsOnNonAsciiRestrictedNameByte) {
+    std::string invalid = std::string("text/p") + "\xC2\xA3" + "ain";
+    EXPECT_THROW(parse(invalid), polycpp::TypeError);
 }
 
 TEST(MediaTyperParseTest, ThrowsOnEmptyString) {
@@ -419,6 +458,11 @@ TEST(MediaTyperTestTest, FailsInvalidMediaTypes) {
 
 TEST(MediaTyperTestTest, FailsEmptyString) {
     EXPECT_FALSE(test(""));
+}
+
+TEST(MediaTyperTestTest, FailsNonAsciiRestrictedNameByte) {
+    std::string invalid = std::string("text/p") + "\xC2\xA3" + "ain";
+    EXPECT_FALSE(test(invalid));
 }
 
 // ============================================================================

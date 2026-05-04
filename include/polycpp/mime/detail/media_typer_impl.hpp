@@ -23,7 +23,9 @@ namespace detail {
  *        restricted-name (ALPHA / DIGIT).
  */
 inline bool isRestrictedNameFirst(char c) {
-    return std::isalnum(static_cast<unsigned char>(c)) != 0;
+    return (c >= 'A' && c <= 'Z') ||
+           (c >= 'a' && c <= 'z') ||
+           (c >= '0' && c <= '9');
 }
 
 /**
@@ -34,7 +36,7 @@ inline bool isRestrictedNameFirst(char c) {
  * (plus "." for subtype, and "+" for full type/subtype string, handled separately)
  */
 inline bool isTypeNameChar(char c) {
-    if (std::isalnum(static_cast<unsigned char>(c))) return true;
+    if (isRestrictedNameFirst(c)) return true;
     switch (c) {
         case '!': case '#': case '$': case '&':
         case '-': case '^': case '_':
