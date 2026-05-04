@@ -184,10 +184,12 @@ struct MediaType {
 };
 
 /**
- * @brief Parse a media type string into its components.
+ * @brief Parse a bare media type string into its components.
  *
  * Validates the format per RFC 6838. Input is lowercased. Leading and
- * trailing whitespace is trimmed.
+ * trailing whitespace is trimmed. This function does not parse full
+ * Content-Type header values with parameters; strip parameters before
+ * calling it.
  *
  * @param mediaType A media type string (e.g., `"application/vnd.api+json"`).
  * @return A MediaType with type, subtype, and optional suffix.
@@ -225,7 +227,10 @@ MediaType parse(const std::string& mediaType);
 std::string format(const MediaType& mt);
 
 /**
- * @brief Test whether a string is a valid media type.
+ * @brief Test whether a string is a valid bare media type.
+ *
+ * This function does not validate full Content-Type header values with
+ * parameters; strip parameters before calling it.
  *
  * @param mediaType A string to test.
  * @return true if the string matches the RFC 6838 media type format.

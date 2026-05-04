@@ -61,26 +61,23 @@ Second, ``application/octet-stream`` is the defensible fallback when
 the extension is unknown — RFC 2046 §4.5.1 says so, and every browser
 treats it as "download, don't render".
 
-Step 3 — sniff binaries separately from text
---------------------------------------------
+Step 3 — decide whether to treat the body as text
+-------------------------------------------------
 
-For images and other binary formats, you want ``Content-Type`` but
-*not* ``Content-Length`` inflation from chunked encoding or an implicit
-charset. The charset helper lets you branch:
+After choosing the response ``Content-Type``, you may still need to
+decide whether the bytes are safe to decode for logging, previews, or
+template processing. Let the charset helper make that call:
 
 .. code-block:: cpp
 
    bool isTextual(std::string_view mimeType) {
        using namespace polycpp::mime;
-       if (auto cs = charset(std::string(mimeType))) {
-           return true;  // any type with a known charset is textual
-       }
-       return mimeType.starts_with("text/");
+       return charset(std::string(mimeType)).has_value();
    }
 
-:cpp:func:`polycpp::mime::charset` already returns a UTF-8 fallback for
-``text/*``, but checking the prefix too catches hand-crafted types that
-aren't in mime-db yet.
+:cpp:func:`polycpp::mime::charset` accepts a MIME type with optional
+parameters. It returns explicit mime-db charsets and the UTF-8 fallback
+for ``text/*`` types, so a separate ``text/`` prefix check is redundant.
 
 Step 4 — wire it together
 -------------------------

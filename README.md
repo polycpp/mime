@@ -72,6 +72,14 @@ cmake --build build -j$(nproc)
 cd build && ctest --output-on-failure
 ```
 
+## Consuming with CMake
+
+FetchContent is the documented consumption path today. Until release tags
+exist, pin `polycpp_mime` to a commit SHA instead of a floating branch.
+The transitive `polycpp` fetch currently follows `polycpp` `master` unless
+you provide a pinned local checkout with `FETCHCONTENT_SOURCE_DIR_POLYCPP`
+or `POLYCPP_SOURCE_DIR`.
+
 ## License
 
 MIT

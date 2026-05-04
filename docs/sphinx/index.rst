@@ -54,16 +54,24 @@ in as ``constexpr`` data — zero startup cost, zero I/O at first lookup.
 Getting started
 ---------------
 
-.. code-block:: bash
+.. code-block:: cmake
 
-   # With FetchContent (recommended)
+   # With FetchContent
+   include(FetchContent)
    FetchContent_Declare(
        polycpp_mime
        GIT_REPOSITORY https://github.com/polycpp/mime.git
-       GIT_TAG        master
+       GIT_TAG        44646ebf70ec63bbd4a84fe391035cc6b9be2e56
    )
    FetchContent_MakeAvailable(polycpp_mime)
+   add_executable(my_app main.cpp)
    target_link_libraries(my_app PRIVATE polycpp::mime)
+
+FetchContent is the documented consumption path today. Until release tags
+exist, pin ``GIT_TAG`` to a mime commit SHA you have tested. By default,
+the transitive ``polycpp`` dependency is still fetched from its ``master``
+branch; for fully reproducible builds, provide your own pinned ``polycpp``
+checkout as shown in :doc:`Installation <getting-started/installation>`.
 
 :doc:`Installation <getting-started/installation>` · :doc:`Quickstart <getting-started/quickstart>` · :doc:`Tutorials <tutorials/index>` · :doc:`API reference <api/index>`
 

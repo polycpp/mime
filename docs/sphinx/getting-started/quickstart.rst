@@ -2,15 +2,45 @@ Quickstart
 ==========
 
 This page walks through a minimal mime program end-to-end. Copy the
-snippet, run it, then jump to :doc:`../tutorials/index` for task-oriented
-walkthroughs or :doc:`../api/index` for the full reference.
+two files into an empty directory, run them, then jump to
+:doc:`../tutorials/index` for task-oriented walkthroughs or
+:doc:`../api/index` for the full reference.
 
 We'll take a handful of file paths and MIME strings, feed them through
-every public function, and print the results. The output line-for-line
-mirrors what an HTTP server would attach to a response.
+the core public functions, and print the results. The ``Content-Type``
+lines mirror what an HTTP server would attach to a response.
 
 Full example
 ------------
+
+``CMakeLists.txt``:
+
+.. code-block:: cmake
+
+   cmake_minimum_required(VERSION 3.20)
+   project(mime_quickstart LANGUAGES CXX)
+
+   set(CMAKE_CXX_STANDARD 20)
+   set(CMAKE_CXX_STANDARD_REQUIRED ON)
+   set(CMAKE_CXX_EXTENSIONS OFF)
+
+   include(FetchContent)
+   FetchContent_Declare(
+       polycpp_mime
+       GIT_REPOSITORY https://github.com/polycpp/mime.git
+       GIT_TAG        44646ebf70ec63bbd4a84fe391035cc6b9be2e56
+   )
+   FetchContent_MakeAvailable(polycpp_mime)
+
+   add_executable(mime_quickstart main.cpp)
+   target_link_libraries(mime_quickstart PRIVATE polycpp::mime)
+
+This pins the mime checkout used by the quickstart. For fully
+reproducible builds, also provide a pinned local ``polycpp`` checkout;
+the default transitive fetch currently follows ``polycpp`` ``master``.
+See :doc:`installation` for the local-checkout options.
+
+``main.cpp``:
 
 .. code-block:: cpp
 
@@ -54,13 +84,13 @@ Full example
        std::cout << format(MediaType{"image", "svg", "xml"}) << '\n';
    }
 
-Compile it with the same CMake wiring from :doc:`installation`:
+Build and run:
 
 .. code-block:: bash
 
-   cmake -B build -G Ninja
+   cmake -S . -B build -G Ninja
    cmake --build build
-   ./build/my_app
+   ./build/mime_quickstart
 
 Expected output:
 
@@ -98,6 +128,9 @@ What just happened
 5. :cpp:func:`polycpp::mime::parse` and :cpp:func:`polycpp::mime::format`
    are the RFC 6838 pair — they understand structured-syntax suffixes
    (``+json``, ``+xml``, ``+cbor``) that ``mime-types`` alone does not.
+   Both throw ``polycpp::TypeError`` on invalid input. If you are parsing
+   a full ``Content-Type`` header, strip parameters at the first ``;``
+   before calling ``test`` or ``parse``.
 
 Next steps
 ----------
