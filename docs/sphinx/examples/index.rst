@@ -19,7 +19,8 @@ From the repository root:
 .. code-block:: bash
 
    cmake -B build -G Ninja
-   cmake --build build --target <example_name>
-   ./build/examples/<example_name>
+   cmake --build build --target polycpp_mime_example_content_type_cli
+   ./build/examples/content_type_cli index.html .json
 
-Examples are only built when ``POLYCPP_MIME_BUILD_EXAMPLES=ON`` is passed to CMake.
+Standalone builds enable examples by default. When mime is consumed as a
+subproject, pass ``-DPOLYCPP_MIME_BUILD_EXAMPLES=ON`` to build them.

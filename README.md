@@ -2,7 +2,7 @@
 
 C++ port of npm [mime-types](https://www.npmjs.com/package/mime-types), [mime-db](https://www.npmjs.com/package/mime-db), and [media-typer](https://www.npmjs.com/package/media-typer) for [polycpp](https://github.com/enricohuang/polycpp).
 
-Port version: `0.1.0`
+Port version: `1.0.0`
 
 Initial port based on upstream version: `mime-types 3.0.2, mime-db 1.54.0, media-typer 1.1.0`
 

@@ -127,6 +127,7 @@ Legend:
 ## Public Release
 
 - [ ] production-grade quality confirmed
+- [x] port version is at least `1.0.0`
 - [x] public documentation ready
 - [x] generated docs placeholder pages replaced with real public documentation
 - [x] public docs do not contain local absolute paths

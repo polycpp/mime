@@ -178,7 +178,7 @@
 
 ## v0 scope
 
-- port version: 0.1.0
+- port version: 1.0.0
 - versioning note: port version is independent from upstream versioning
 - supported APIs: `polycpp::mime::lookup`, `contentType`, `extension`, `charset`, `types`, `extensions`, `extensionConflicts`, `MediaType`, `parse`, `format`, and `test`.
 - unsupported APIs: alias object `charsets.lookup`, CommonJS package mechanics, mutable JavaScript object export semantics, and dynamic non-string argument behavior.
